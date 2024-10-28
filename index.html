@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Workout Planner</title>
+    
+    <!-- Tailwind CSS and DaisyUI CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.3/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-base-200">
+    <!-- API Key Input Section -->
+    <div class="navbar bg-base-100 shadow-lg flex-col md:flex-row p-2">
+        <div class="flex-1">
+            <a class="btn btn-ghost text-xl">AI Workout Planner</a>
+        </div>
+        <div class="flex-none gap-2 w-full md:w-auto mt-2 md:mt-0">
+            <div class="form-control w-full md:w-auto flex-1 flex flex-row items-center gap-2">
+                <div class="relative flex-1">
+                    <input type="password" 
+                           id="apiKey" 
+                           placeholder="Enter RapidAPI Key" 
+                           class="input input-bordered w-full pr-10" />
+                    <div id="apiKeyStatus" 
+                         class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                        <!-- Status icon will be inserted here -->
+                    </div>
+                </div>
+                <div class="tooltip tooltip-left">
+                    <a href="https://rapidapi.com/ltdbilgisam/api/ai-workout-planner-exercise-fitness-nutrition-guide"
+                       target="_blank"
+                       class="btn btn-primary btn-sm">
+                        Get API Key
+                        <svg xmlns="http://www.w3.org/2000/svg" 
+                             class="h-4 w-4 ml-1" 
+                             fill="none" 
+                             viewBox="0 0 24 24" 
+                             stroke="currentColor">
+                            <path stroke-linecap="round" 
+                                  stroke-linejoin="round" 
+                                  stroke-width="2" 
+                                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <label class="swap swap-rotate ml-2">
+                <input type="checkbox" class="theme-controller" value="dark" />
+                <svg class="swap-on fill-current w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0v1a1,1,0,0,0,1,1ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"/></svg>
+                <svg class="swap-off fill-current w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
+            </label>
+        </div>
+    </div>
+
+    <!-- Add this modal for first-time visitors -->
+    <dialog id="apiKeyModal" class="modal">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg">Welcome to AI Workout Planner!</h3>
+            <p class="py-4">
+                To use this application, you'll need a RapidAPI key. 
+                You can get one for free by following these steps:
+            </p>
+            <ol class="list-decimal list-inside space-y-2 mb-4">
+                <li>Click the "Get API Key" button</li>
+                <li>Sign up for a free RapidAPI account</li>
+                <li>Subscribe to the free tier of the API</li>
+                <li>Copy your API key and paste it here</li>
+            </ol>
+            <div class="modal-action">
+                <button class="btn btn-primary" onclick="window.location.href='https://rapidapi.com/ai-workout-planner-ai-workout-planner-default/api/ai-workout-planner-exercise-fitness-nutrition-guide'">
+                    Get API Key
+                </button>
+                <button class="btn" onclick="document.getElementById('apiKeyModal').close()">
+                    Close
+                </button>
+            </div>
+        </div>
+    </dialog>
+
+    <div class="container mx-auto p-4">
+        <div class="tabs tabs-boxed justify-start md:justify-center mb-4 overflow-x-auto">
+            <a class="tab tab-active whitespace-nowrap" data-tab="workout">Workout Plan</a>
+            <a class="tab whitespace-nowrap" data-tab="exercise">Exercise Details</a>
+            <a class="tab whitespace-nowrap" data-tab="nutrition">Nutrition Advice</a>
+            <a class="tab whitespace-nowrap" data-tab="custom">Custom Plan</a>
+            <a class="tab whitespace-nowrap" data-tab="analyze">Analyze Food</a>
+        </div>
+
+        <!-- Workout Plan Form -->
+        <div id="workoutForm" class="form-section active">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title">Generate Workout Plan</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Goal</span>
+                            </label>
+                            <select class="select select-bordered" id="workoutGoal">
+                                <option>Build muscle</option>
+                                <option>Lose weight</option>
+                                <option>Improve fitness</option>
+                            </select>
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Fitness Level</span>
+                            </label>
+                            <select class="select select-bordered" id="fitnessLevel">
+                                <option>Beginner</option>
+                                <option>Intermediate</option>
+                                <option>Advanced</option>
+                            </select>
+                        </div>
+                        <!-- Add more form fields -->
+                    </div>
+                    <div class="card-actions justify-end mt-4">
+                        <button class="btn btn-primary" onclick="generateWorkoutPlan()">Generate Plan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exercise Details Form -->
+        <div id="exerciseForm" class="form-section hidden">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title">Get Exercise Details</h2>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Exercise Name</span>
+                            </label>
+                            <input type="text" id="exerciseName" placeholder="Enter exercise name" class="input input-bordered" />
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Language</span>
+                            </label>
+                            <select class="select select-bordered" id="exerciseLang">
+                                <option value="en">English</option>
+                                <option value="es">Spanish</option>
+                                <option value="tr">Turkish</option>
+                            </select>
+                        </div>
+                        <div class="card-actions justify-end mt-4">
+                            <button class="btn btn-primary" onclick="getExerciseDetails()">Get Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nutrition Advice Form -->
+        <div id="nutritionForm" class="form-section hidden">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title">Get Nutrition Advice</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Goal</span>
+                            </label>
+                            <select class="select select-bordered" id="nutritionGoal">
+                                <option>Lose weight</option>
+                                <option>Gain muscle</option>
+                                <option>Maintain weight</option>
+                            </select>
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Dietary Restrictions</span>
+                            </label>
+                            <select class="select select-bordered" id="dietaryRestrictions" multiple>
+                                <option value="Vegetarian">Vegetarian</option>
+                                <option value="Vegan">Vegan</option>
+                                <option value="Gluten-free">Gluten-free</option>
+                                <option value="Dairy-free">Dairy-free</option>
+                            </select>
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Current Weight (kg)</span>
+                            </label>
+                            <input type="number" id="currentWeight" class="input input-bordered" />
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Target Weight (kg)</span>
+                            </label>
+                            <input type="number" id="targetWeight" class="input input-bordered" />
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Activity Level</span>
+                            </label>
+                            <select class="select select-bordered" id="activityLevel">
+                                <option>Sedentary</option>
+                                <option>Moderate</option>
+                                <option>Active</option>
+                            </select>
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Language</span>
+                            </label>
+                            <select class="select select-bordered" id="nutritionLang">
+                                <option value="en">English</option>
+                                <option value="es">Spanish</option>
+                                <option value="tr">Turkish</option>
+                            </select>
+                        </div>
+                        <div class="card-actions justify-end mt-4 col-span-2">
+                            <button class="btn btn-primary" onclick="getNutritionAdvice()">Get Advice</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Plan Form -->
+        <div id="customForm" class="form-section hidden">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title">Create Custom Workout Plan</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Goal</span>
+                            </label>
+                            <select class="select select-bordered" id="customGoal">
+                                <option>Improve overall fitness</option>
+                                <option>Build muscle</option>
+                                <option>Lose weight</option>
+                            </select>
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Fitness Level</span>
+                            </label>
+                            <select class="select select-bordered" id="customFitnessLevel">
+                                <option>Beginner</option>
+                                <option>Intermediate</option>
+                                <option>Advanced</option>
+                            </select>
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Workout Preferences</span>
+                            </label>
+                            <select class="select select-bordered" id="customPreferences" multiple>
+                                <option value="HIIT">HIIT</option>
+                                <option value="Yoga">Yoga</option>
+                                <option value="Weight Training">Weight Training</option>
+                                <option value="Cardio">Cardio</option>
+                            </select>
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Health Conditions</span>
+                            </label>
+                            <input type="text" id="healthConditions" placeholder="Enter health conditions" class="input input-bordered" />
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Days per Week</span>
+                            </label>
+                            <input type="number" id="daysPerWeek" min="1" max="7" class="input input-bordered" />
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Session Duration (minutes)</span>
+                            </label>
+                            <input type="number" id="sessionDuration" class="input input-bordered" />
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Plan Duration (weeks)</span>
+                            </label>
+                            <input type="number" id="planDuration" class="input input-bordered" />
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Language</span>
+                            </label>
+                            <select class="select select-bordered" id="customLang">
+                                <option value="en">English</option>
+                                <option value="es">Spanish</option>
+                                <option value="tr">Turkish</option>
+                            </select>
+                        </div>
+                        <div class="card-actions justify-end mt-4 col-span-2">
+                            <button class="btn btn-primary" onclick="getCustomPlan()">Create Plan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analyze Food Form için güncelleme -->
+        <div id="analyzeForm" class="form-section hidden">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title">Analyze Food Plate</h2>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Upload Food Image</span>
+                            </label>
+                            <input type="file" 
+                                   id="foodImage" 
+                                   accept="image/*"
+                                   class="file-input file-input-bordered w-full" />
+                            <div id="imagePreview" class="mt-2 hidden">
+                                <img src="" alt="Preview" class="max-w-xs rounded-lg shadow-lg" />
+                                <button class="btn btn-sm btn-error mt-2" onclick="removeImage()">Remove Image</button>
+                            </div>
+                        </div>
+                        <div class="divider">OR</div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Image URL</span>
+                            </label>
+                            <input type="url" 
+                                   id="foodImageUrl" 
+                                   placeholder="Enter food image URL" 
+                                   class="input input-bordered" />
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Language</span>
+                            </label>
+                            <select class="select select-bordered" id="foodLang">
+                                <option value="en">English</option>
+                                <option value="es">Spanish</option>
+                                <option value="tr">Turkish</option>
+                            </select>
+                        </div>
+                        <div class="card-actions justify-end mt-4">
+                            <button class="btn btn-primary" onclick="analyzeFoodPlate()">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                </svg>
+                                Analyze Food
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Component - Add this just before the Results Section -->
+        <div id="loading" class="hidden">
+            <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center backdrop-blur-sm">
+                <div class="bg-base-100 p-6 rounded-lg shadow-xl flex flex-col items-center max-w-sm mx-4">
+                    <span class="loading loading-spinner loading-lg text-primary"></span>
+                    <p class="mt-4 text-lg font-semibold text-center">Processing your request...</p>
+                    <p class="text-sm text-center mt-2 text-base-content/70">This may take a few moments</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results" class="mt-8 hidden">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body p-4 md:p-6">
+                    <h2 class="card-title text-xl md:text-2xl mb-4">Results</h2>
+                    
+                    <!-- Workout Plan Results -->
+                    <div id="workoutPlanResults" class="hidden space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="stats shadow flex flex-col md:flex-row">
+                                <div class="stat">
+                                    <div class="stat-title">Goal</div>
+                                    <div class="stat-value text-lg" id="resultGoal"></div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-title">Fitness Level</div>
+                                    <div class="stat-value text-lg" id="resultFitnessLevel"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="stats shadow flex flex-col md:flex-row">
+                                <div class="stat">
+                                    <div class="stat-title">Duration</div>
+                                    <div class="stat-value text-lg" id="resultDuration"></div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-title">Sessions</div>
+                                    <div class="stat-value text-lg" id="resultSessions"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="divider">Workout Schedule</div>
+                        
+                        <!-- Workout days container'ı ekleyelim -->
+                        <div id="workoutDays" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <!-- Workout cards will be inserted here -->
+                        </div>
+
+                        <div class="divider">SEO Information</div>
+                        <div class="bg-base-200 p-4 rounded-lg">
+                            <h3 class="font-bold text-lg" id="seoTitle"></h3>
+                            <p class="mt-2" id="seoContent"></p>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                <span id="seoKeywords" class="text-sm opacity-70"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Exercise Details Results -->
+                     <!-- Exercise Details Results -->
+<div id="exerciseDetailsResults" class="hidden space-y-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Exercise Information -->
+        <div class="card bg-base-200">
+            <div class="card-body">
+                <h3 class="card-title text-2xl" id="exerciseDetailName"></h3>
+                <p id="exerciseDescription" class="text-base-content/80 mt-2"></p>
+                <div class="divider">Equipment Needed</div>
+                <div class="flex flex-wrap gap-2" id="equipmentNeeded">
+                    <!-- Equipment badges will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Muscles Worked -->
+        <div class="card bg-base-200">
+            <div class="card-body">
+                <h3 class="card-title">Muscles Worked</h3>
+                <div class="grid grid-cols-2 gap-4 mt-4">
+                    <div>
+                        <h4 class="font-bold text-primary mb-2">Primary Muscles</h4>
+                        <ul id="primaryMuscles" class="list-disc list-inside space-y-1">
+                            <!-- Primary muscles will be inserted here -->
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-secondary mb-2">Secondary Muscles</h4>
+                        <ul id="secondaryMuscles" class="list-disc list-inside space-y-1">
+                            <!-- Secondary muscles will be inserted here -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="card bg-base-200">
+        <div class="card-body">
+            <h3 class="card-title mb-4">Instructions</h3>
+            <div class="steps steps-vertical" id="exerciseInstructions">
+                <!-- Instructions will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- SEO Information -->
+    <div class="card bg-base-200">
+        <div class="card-body">
+            <h3 class="card-title">Additional Information</h3>
+            <div class="prose max-w-none">
+                <h4 id="exerciseSeoTitle" class="text-lg font-bold mt-4"></h4>
+                <p id="exerciseSeoContent" class="text-base-content/80 mt-2"></p>
+                <div class="flex flex-wrap gap-2 mt-4">
+                    <span class="text-sm opacity-70" id="exerciseSeoKeywords"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+                    <!-- Nutrition Advice Results -->
+                    <div id="nutritionResults" class="hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="stats shadow">
+                                <div class="stat">
+                                    <div class="stat-title">Goal</div>
+                                    <div class="stat-value text-lg" id="nutritionGoalResult"></div>
+                                </div>
+                            </div>
+
+                            <div class="stats shadow">
+                                <div class="stat">
+                                    <div class="stat-title">Daily Calories</div>
+                                    <div class="stat-value text-lg" id="caloriesPerDay"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="divider">Macronutrients</div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="stat bg-base-200 rounded-lg">
+                                <div class="stat-title">Carbohydrates</div>
+                                <div class="stat-value text-primary" id="macroCarbs"></div>
+                            </div>
+                            <div class="stat bg-base-200 rounded-lg">
+                                <div class="stat-title">Proteins</div>
+                                <div class="stat-value text-secondary" id="macroProtein"></div>
+                            </div>
+                            <div class="stat bg-base-200 rounded-lg">
+                                <div class="stat-title">Fats</div>
+                                <div class="stat-value text-accent" id="macroFats"></div>
+                            </div>
+                        </div>
+
+                        <div class="divider">Meal Suggestions</div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="mealSuggestions">
+                            <!-- Meal suggestions will be inserted here -->
+                        </div>
+
+                        <div class="divider">SEO Information</div>
+                        <div class="bg-base-200 p-4 rounded-lg">
+                            <h3 class="font-bold text-lg" id="nutritionSeoTitle"></h3>
+                            <p class="mt-2" id="nutritionSeoContent"></p>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                <span id="nutritionSeoKeywords" class="text-sm opacity-70"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Food Analysis Results için güncelleme -->
+                    <div id="foodAnalysisResults" class="hidden space-y-6">
+                        <!-- Analyzed Image Section -->
+                        <div class="card bg-base-200">
+                            <div class="card-body">
+                                <h3 class="card-title">Analyzed Image</h3>
+                                <div class="flex justify-center">
+                                    <img id="analyzedImage" src="" alt="Analyzed food" class="max-w-sm rounded-lg shadow-xl" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Identified Foods and Nutritional Info -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="card bg-base-200">
+                                <div class="card-body">
+                                    <h3 class="card-title">Identified Foods</h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="table table-zebra w-full">
+                                            <thead>
+                                                <tr>
+                                                    <th>Food Item</th>
+                                                    <th>Portion</th>
+                                                    <th>Calories</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="identifiedFoodsTable">
+                                                <!-- Foods will be inserted here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card bg-base-200">
+                                <div class="card-body">
+                                    <h3 class="card-title">Nutritional Information</h3>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="stat bg-base-100 rounded-lg">
+                                            <div class="stat-title">Total Calories</div>
+                                            <div class="stat-value text-primary" id="estimatedCalories">0</div>
+                                        </div>
+                                        <div class="stat bg-base-100 rounded-lg">
+                                            <div class="stat-title">Balance Score</div>
+                                            <div class="stat-value text-secondary" id="balanceScore">0/10</div>
+                                        </div>
+                                    </div>
+                                    <div class="divider">Macronutrients</div>
+                                    <div class="flex justify-around">
+                                        <div class="radial-progress text-primary" id="proteinProgress" style="--value:0;">
+                                            <div class="text-center">
+                                                <div class="font-bold" id="foodProtein">0g</div>
+                                                <div class="text-xs">Protein</div>
+                                            </div>
+                                        </div>
+                                        <div class="radial-progress text-secondary" id="carbsProgress" style="--value:0;">
+                                            <div class="text-center">
+                                                <div class="font-bold" id="foodCarbs">0g</div>
+                                                <div class="text-xs">Carbs</div>
+                                            </div>
+                                        </div>
+                                        <div class="radial-progress text-accent" id="fatsProgress" style="--value:0;">
+                                            <div class="text-center">
+                                                <div class="font-bold" id="foodFats">0g</div>
+                                                <div class="text-xs">Fats</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Analysis and Suggestions -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="card bg-base-200">
+                                <div class="card-body">
+                                    <h3 class="card-title">Meal Analysis</h3>
+                                    <div id="mealBalance" class="prose">
+                                        <!-- Meal balance text will be inserted here -->
+                                    </div>
+                                    <div class="mt-4">
+                                        <h4 class="font-bold mb-2">Dietary Information:</h4>
+                                        <div class="flex flex-wrap gap-2" id="dietaryFlags">
+                                            <!-- Dietary flags will be inserted here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card bg-base-200">
+                                <div class="card-body">
+                                    <h3 class="card-title">Suggestions for Improvement</h3>
+                                    <ul class="space-y-2" id="foodSuggestions">
+                                        <!-- Suggestions will be inserted here -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add responsive styles -->
+    <style>
+    @media (max-width: 768px) {
+        .tabs {
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .tab {
+            flex: 0 0 auto;
+        }
+        
+        .stats {
+            flex-direction: column;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .card-body {
+            padding: 1rem;
+        }
+    }
+
+    /* Smooth transitions */
+    .transition-all {
+        transition: all 0.3s ease-in-out;
+    }
+
+    /* Better touch targets */
+    .btn, .input, .select {
+        min-height: 3rem;
+    }
+
+    /* Loading backdrop blur */
+    .backdrop-blur-sm {
+        backdrop-filter: blur(4px);
+    }
+    /* Add these styles to your existing styles section */
+.steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.step {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: rgba(var(--b1) / 0.1);
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.step:hover {
+    background-color: rgba(var(--p) / 0.1);
+}
+
+.step-content {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.step-number {
+    background-color: hsl(var(--p));
+    color: hsl(var(--pc));
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.step-text {
+    flex: 1;
+    padding-top: 0.25rem;
+}
+
+/* Add to your existing styles */
+.input-group {
+    position: relative;
+}
+
+.input-group .input {
+    padding-right: 2.5rem;
+}
+
+.input-group .status-icon {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Tooltip styles */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    background: hsl(var(--b3));
+    color: hsl(var(--bc));
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.tooltip:hover::before {
+    content: '';
+    position: absolute;
+    border: 8px solid transparent;
+    z-index: 10;
+}
+
+.tooltip.tooltip-left:hover::after {
+    right: calc(100% + 0.5rem);
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.tooltip.tooltip-left:hover::before {
+    border-left-color: hsl(var(--b3));
+    right: calc(100% - 0.5rem);
+    top: 50%;
+    transform: translateY(-50%);
+}
+    </style>
+    <script>
+          // Tab switching logic
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', (e) => {
+        // Remove active class from all tabs
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
+        // Add active class to clicked tab
+        e.target.classList.add('tab-active');
+        
+        // Hide all form sections
+        document.querySelectorAll('.form-section').forEach(section => {
+            section.classList.add('hidden');
+        });
+        
+        // Show selected form section
+        const formId = e.target.getAttribute('data-tab') + 'Form';
+        document.getElementById(formId).classList.remove('hidden');
+
+        // If results are visible, show corresponding result section
+        if (!document.getElementById('results').classList.contains('hidden')) {
+            const resultId = e.target.getAttribute('data-tab') + 'Results';
+            showResultSection(resultId);
+        }
+    });
+});
+
+// Helper function to show/hide loading
+function toggleLoading(show) {
+    document.getElementById('loading').classList.toggle('hidden', !show);
+}
+
+// Helper function to show specific result section and hide others
+function showResultSection(sectionId) {
+    // Hide all result sections first
+    document.querySelectorAll('#results > div > div > div[id$="Results"]').forEach(div => {
+        div.classList.add('hidden');
+    });
+    
+    // Show the requested section
+    const section = document.getElementById(sectionId);
+    if (section) {
+        section.classList.remove('hidden');
+    }
+}
+
+// Form validation helper
+function validateForm(formData) {
+    const errors = [];
+    for (const [key, value] of Object.entries(formData)) {
+        if (!value || (Array.isArray(value) && value.length === 0)) {
+            errors.push(`${key.replace('_', ' ')} is required`);
+        }
+    }
+    return errors;
+}
+
+// Error handling helper
+function showError(message) {
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-error mb-4';
+    alert.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>${message}</span>
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    `;
+    document.querySelector('.container').insertBefore(alert, document.querySelector('.tabs'));
+    
+    // Auto dismiss after 5 seconds
+    setTimeout(() => alert.remove(), 5000);
+    
+    // Click to dismiss
+    alert.querySelector('button').onclick = () => alert.remove();
+}
+
+// Success notification helper
+function showSuccess(message) {
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-success mb-4';
+    alert.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>${message}</span>
+    `;
+    document.querySelector('.container').insertBefore(alert, document.querySelector('.tabs'));
+    setTimeout(() => alert.remove(), 3000);
+}
+
+// API request helper with better error handling
+async function makeApiRequest(endpoint, data, options = {}) {
+    const apiKey = document.getElementById('apiKey').value;
+    if (!apiKey) {
+        throw new Error('Please enter your RapidAPI key');
+    }
+
+    const defaultOptions = {
+        method: 'POST',
+        headers: {
+            'x-rapidapi-key': apiKey,
+            'x-rapidapi-host': 'ai-workout-planner-exercise-fitness-nutrition-guide.p.rapidapi.com',
+            'Content-Type': 'application/json'
+        }
+    };
+
+    try {
+        const response = await fetch(
+            `https://ai-workout-planner-exercise-fitness-nutrition-guide.p.rapidapi.com/${endpoint}?noqueue=1`,
+            {
+                ...defaultOptions,
+                ...options,
+                body: JSON.stringify(data)
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(`API request failed: ${response.statusText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        throw new Error(`Request failed: ${error.message}`);
+    }
+}
+
+// Update the main functions to use specific result sections
+async function generateWorkoutPlan() {
+    try {
+        toggleLoading(true);
+        
+        const data = {
+            goal: document.getElementById('workoutGoal').value,
+            fitness_level: document.getElementById('fitnessLevel').value,
+            preferences: ['Weight training', 'Cardio'],
+            health_conditions: ['None'],
+            schedule: {
+                days_per_week: 4,
+                session_duration: 60
+            },
+            plan_duration_weeks: 4,
+            lang: 'en'
+        };
+
+        const result = await makeApiRequest('generateWorkoutPlan', data);
+        
+        // Show results container and specific section
+        document.getElementById('results').classList.remove('hidden');
+        showResultSection('workoutPlanResults');
+        
+        // Update workout plan specific fields
+        document.getElementById('resultGoal').textContent = result.result.goal;
+        document.getElementById('resultFitnessLevel').textContent = result.result.fitness_level;
+        document.getElementById('resultDuration').textContent = `${result.result.total_weeks} weeks`;
+        document.getElementById('resultSessions').textContent = 
+            `${result.result.schedule.days_per_week} days/week, ${result.result.schedule.session_duration} min`;
+
+        // Update workout days
+        const workoutDaysContainer = document.getElementById('workoutDays');
+        workoutDaysContainer.innerHTML = '';
+        result.result.exercises.forEach(day => {
+            const dayCard = document.createElement('div');
+            dayCard.className = 'card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300';
+            dayCard.innerHTML = `
+                <div class="card-body p-4">
+                    <h3 class="card-title text-primary">${day.day}</h3>
+                    <div class="divider my-2"></div>
+                    <ul class="space-y-3">
+                        ${day.exercises.map(exercise => `
+                            <li class="bg-base-100 p-4 rounded-lg hover:shadow-md transition-shadow">
+                                <div class="font-bold text-lg mb-2">${exercise.name}</div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="badge badge-lg badge-primary">${exercise.sets} sets</span>
+                                    <span class="badge badge-lg badge-secondary">${exercise.repetitions}</span>
+                                    <span class="badge badge-lg badge-accent">${exercise.duration}</span>
+                                </div>
+                                ${exercise.equipment ? `
+                                    <div class="text-sm mt-2 opacity-75">
+                                        <i class="fas fa-dumbbell mr-1"></i> Equipment: ${exercise.equipment}
+                                    </div>
+                                ` : ''}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
+            workoutDaysContainer.appendChild(dayCard);
+        });
+
+        showSuccess('Workout plan generated successfully!');
+    } catch (error) {
+        showError(error.message);
+    } finally {
+        toggleLoading(false);
+    }
+}
+
+async function getExerciseDetails() {
+    try {
+        toggleLoading(true);
+
+        const data = {
+            exercise_name: document.getElementById('exerciseName').value,
+            lang: document.getElementById('exerciseLang').value
+        };
+
+        // Validate input
+        if (!data.exercise_name) {
+            throw new Error('Please enter an exercise name');
+        }
+
+        const result = await makeApiRequest('exerciseDetails', data);
+        
+        // Show results container and specific section
+        document.getElementById('results').classList.remove('hidden');
+        showResultSection('exerciseDetailsResults');
+
+        // Update exercise details specific fields
+        document.getElementById('exerciseDetailName').textContent = result.result.exercise_name;
+        document.getElementById('exerciseDescription').textContent = result.result.description;
+
+        // Update equipment needed
+        const equipmentContainer = document.getElementById('equipmentNeeded');
+        equipmentContainer.innerHTML = result.result.equipment_needed.map(equipment => `
+            <div class="badge badge-lg badge-primary">${equipment}</div>
+        `).join('');
+
+        // Update muscles worked
+        const primaryMusclesContainer = document.getElementById('primaryMuscles');
+        const secondaryMusclesContainer = document.getElementById('secondaryMuscles');
+
+        primaryMusclesContainer.innerHTML = result.result.primary_muscles
+            .map(muscle => `<li class="text-primary">${muscle}</li>`).join('');
+        secondaryMusclesContainer.innerHTML = result.result.secondary_muscles
+            .map(muscle => `<li class="text-secondary">${muscle}</li>`).join('');
+
+        // Update instructions with step-by-step format
+        const instructionsContainer = document.getElementById('exerciseInstructions');
+        instructionsContainer.innerHTML = result.result.instructions
+            .map((instruction, index) => `
+                <div class="step">
+                    <div class="step-content">
+                        <div class="step-number">${index + 1}</div>
+                        <div class="step-text">${instruction}</div>
+                    </div>
+                </div>
+            `).join('');
+
+        // Update SEO Information
+        document.getElementById('exerciseSeoTitle').textContent = result.result.seo_title;
+        document.getElementById('exerciseSeoContent').textContent = result.result.seo_content;
+        document.getElementById('exerciseSeoKeywords').textContent = result.result.seo_keywords;
+
+        showSuccess('Exercise details retrieved successfully!');
+    } catch (error) {
+        showError(error.message);
+        // Hide results if there's an error
+        document.getElementById('results').classList.add('hidden');
+    } finally {
+        toggleLoading(false);
+    }
+}
+
+async function getNutritionAdvice() {
+    try {
+        toggleLoading(true);
+
+        const data = {
+            goal: document.getElementById('nutritionGoal').value,
+            dietary_restrictions: Array.from(document.getElementById('dietaryRestrictions').selectedOptions).map(option => option.value),
+            current_weight: parseFloat(document.getElementById('currentWeight').value),
+            target_weight: parseFloat(document.getElementById('targetWeight').value),
+            daily_activity_level: document.getElementById('activityLevel').value,
+            lang: document.getElementById('nutritionLang').value
+        };
+
+        const result = await makeApiRequest('nutritionAdvice', data);
+        
+        // Show results container and specific section
+        document.getElementById('results').classList.remove('hidden');
+        showResultSection('nutritionResults');
+
+        // Update nutrition specific fields
+        document.getElementById('nutritionGoalResult').textContent = result.result.goal;
+        document.getElementById('caloriesPerDay').textContent = result.result.calories_per_day;
+        document.getElementById('macroCarbs').textContent = result.result.macronutrients.carbohydrates;
+        document.getElementById('macroProtein').textContent = result.result.macronutrients.proteins;
+        document.getElementById('macroFats').textContent = result.result.macronutrients.fats;
+
+        // Generate meal suggestions
+        const suggestionsContainer = document.getElementById('mealSuggestions');
+        suggestionsContainer.innerHTML = '';
+
+        result.result.meal_suggestions.forEach(meal => {
+            const mealCard = document.createElement('div');
+            mealCard.className = 'card bg-base-200 shadow-xl';
+            mealCard.innerHTML = `
+                <div class="card-body">
+                    <h3 class="card-title text-primary">${meal.meal}</h3>
+                    <div class="divider my-0"></div>
+                    ${meal.suggestions.map(suggestion => `
+                        <div class="bg-base-100 p-3 rounded-lg mb-2">
+                            <div class="font-bold text-secondary">${suggestion.name}</div>
+                            <div class="badge badge-primary mt-1">${suggestion.calories} calories</div>
+                            <div class="mt-2">
+                                <p class="font-semibold text-sm">Ingredients:</p>
+                                <ul class="list-disc list-inside text-sm opacity-75">
+                                    ${suggestion.ingredients.map(ingredient => 
+                                        `<li>${ingredient}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            suggestionsContainer.appendChild(mealCard);
+        });
+
+        // Update SEO Information
+        document.getElementById('nutritionSeoTitle').textContent = result.result.seo_title;
+        document.getElementById('nutritionSeoContent').textContent = result.result.seo_content;
+        document.getElementById('nutritionSeoKeywords').textContent = result.result.seo_keywords;
+
+        showSuccess('Nutrition advice generated successfully!');
+    } catch (error) {
+        showError(error.message);
+    } finally {
+        toggleLoading(false);
+    }
+}
+
+async function analyzeFoodPlate() {
+    try {
+        toggleLoading(true);
+
+        const apiKey = document.getElementById('apiKey').value;
+        if (!apiKey) {
+            throw new Error('Please enter your RapidAPI key');
+        }
+
+        const imageFile = document.getElementById('foodImage').files[0];
+        const imageUrl = document.getElementById('foodImageUrl').value;
+        const lang = document.getElementById('foodLang').value;
+
+        if (!imageFile && !imageUrl) {
+            throw new Error('Please provide either an image file or URL');
+        }
+
+        let formData = new FormData();
+        if (imageFile) {
+            formData.append('image', imageFile);
+            formData.append('lang', lang);
+        }
+
+        const endpoint = imageFile ? 
+            'analyzeFoodPlate' : 
+            'analyzeFoodPlate?noqueue=1';
+
+        const response = await fetch(
+            `https://ai-workout-planner-exercise-fitness-nutrition-guide.p.rapidapi.com/${endpoint}?noqueue=1`, 
+            {
+                method: 'POST',
+                headers: {
+                    'x-rapidapi-key': apiKey,
+                    'x-rapidapi-host': 'ai-workout-planner-exercise-fitness-nutrition-guide.p.rapidapi.com',
+                    ...(imageFile ? {} : {'Content-Type': 'application/json'})
+                },
+                body: imageFile ? formData : JSON.stringify({
+                    imageUrl: imageUrl,
+                    lang: lang
+                })
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(`API request failed: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+
+        // Check for API error response
+        if (result.status === 'error') {
+            throw new Error(result.message + (result.details ? `\n\n${result.details}` : ''));
+        }
+
+        // Check if result is null
+        if (!result.result) {
+            throw new Error('Unable to analyze the food plate. Please try with a different image.');
+        }
+
+        // Show results container and specific section
+        document.getElementById('results').classList.remove('hidden');
+        showResultSection('foodAnalysisResults');
+
+        // Update food analysis specific fields
+        document.getElementById('analyzedImage').src = imageFile ? 
+            URL.createObjectURL(imageFile) : imageUrl;
+
+        // Update identified foods table
+        const foodsTable = document.getElementById('identifiedFoodsTable');
+        foodsTable.innerHTML = result.result.foods_identified.map(food => `
+            <tr>
+                <td>${food.name}</td>
+                <td>${food.portion_size}</td>
+                <td>${food.calories} kcal</td>
+            </tr>
+        `).join('');
+
+        // Update nutritional information
+        document.getElementById('estimatedCalories').textContent = result.result.total_nutrition.total_calories;
+        document.getElementById('balanceScore').textContent = `${result.result.meal_analysis.balance_score}/10`;
+
+        // Update macronutrients with ratio values
+        updateMacroProgress('proteinProgress', 'foodProtein', 
+            parseInt(result.result.meal_analysis.protein_ratio),
+            result.result.total_nutrition.total_protein);
+        updateMacroProgress('carbsProgress', 'foodCarbs',
+            parseInt(result.result.meal_analysis.carb_ratio),
+            result.result.total_nutrition.total_carbs);
+        updateMacroProgress('fatsProgress', 'foodFats',
+            parseInt(result.result.meal_analysis.fat_ratio),
+            result.result.total_nutrition.total_fats);
+
+        // Update meal balance
+        document.getElementById('mealBalance').innerHTML = `
+            <p class="text-lg">${result.result.health_insights.meal_balance}</p>
+            <div class="mt-4">
+                <h5 class="font-bold mb-2">Positive Aspects:</h5>
+                <ul class="list-disc list-inside">
+                    ${result.result.health_insights.positive_aspects.map(aspect => 
+                        `<li>${aspect}</li>`).join('')}
+                </ul>
+            </div>
+            <div class="mt-4">
+                <h5 class="font-bold mb-2">Areas for Improvement:</h5>
+                <ul class="list-disc list-inside">
+                    ${result.result.health_insights.improvement_areas.map(area => 
+                        `<li>${area}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+
+        // Update dietary flags
+        const dietaryFlags = document.getElementById('dietaryFlags');
+        dietaryFlags.innerHTML = `
+            ${Object.entries(result.result.dietary_flags)
+                .filter(([key]) => key.startsWith('is_'))
+                .map(([key, value]) => `
+                    <div class="badge badge-lg ${value ? 'badge-success' : 'badge-error'}">
+                        ${key.replace('is_', '').replace('_', ' ')}
+                    </div>
+                `).join('')}
+            ${result.result.dietary_flags.allergens ? `
+                <div class="mt-4 w-full">
+                    <h5 class="font-bold mb-2">Allergens:</h5>
+                    <div class="flex flex-wrap gap-2">
+                        ${result.result.dietary_flags.allergens.map(allergen => 
+                            `<span class="badge badge-warning">${allergen}</span>`).join('')}
+                    </div>
+                </div>
+            ` : ''}
+        `;
+
+        // Update suggestions
+        const suggestions = document.getElementById('foodSuggestions');
+        suggestions.innerHTML = result.result.health_insights.suggestions
+            .map(suggestion => `<li class="alert alert-info">${suggestion}</li>`)
+            .join('');
+
+        showSuccess('Food analysis completed successfully!');
+    } catch (error) {
+        showError(error.message);
+        document.getElementById('results').classList.add('hidden');
+    } finally {
+        toggleLoading(false);
+    }
+}
+
+// Hata gösterimi için showError fonksiyonunu da güncelleyelim
+function showError(message) {
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-error mb-4';
+
+    // Format the error message to handle newlines
+    const formattedMessage = message.split('\n').map(line => `<p>${line}</p>`).join('');
+
+    alert.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <div class="flex-1">
+        ${formattedMessage}
+    </div>
+    <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    `;
+
+    document.querySelector('.container').insertBefore(alert, document.querySelector('.tabs'));
+
+    // Auto dismiss after 8 seconds (increased from 5 to give more time to read detailed errors)
+    setTimeout(() => alert.remove(), 8000);
+
+    // Click to dismiss
+    alert.querySelector('button').onclick = () => alert.remove();
+}
+
+// getCustomPlan fonksiyonunu ekleyelim
+async function getCustomPlan() {
+    try {
+        const apiKey = document.getElementById('apiKey').value;
+        if (!apiKey) {
+            throw new Error('Please enter your RapidAPI key');
+        }
+
+        toggleLoading(true);
+
+        const data = {
+            goal: document.getElementById('customGoal').value,
+            fitness_level: document.getElementById('customFitnessLevel').value,
+            preferences: Array.from(document.getElementById('customPreferences').selectedOptions).map(option => option.value),
+            health_conditions: document.getElementById('healthConditions').value.split(',').filter(condition => condition.trim() !== ''),
+            schedule: {
+                days_per_week: parseInt(document.getElementById('daysPerWeek').value),
+                session_duration: parseInt(document.getElementById('sessionDuration').value)
+            },
+            plan_duration_weeks: parseInt(document.getElementById('planDuration').value),
+            lang: document.getElementById('customLang').value
+        };
+
+        // Validate form data
+        const errors = validateForm(data);
+        if (errors.length > 0) {
+            throw new Error(errors.join('\n'));
+        }
+
+        const response = await fetch('https://ai-workout-planner-exercise-fitness-nutrition-guide.p.rapidapi.com/customWorkoutPlan?noqueue=1', {
+            method: 'POST',
+            headers: {
+                'x-rapidapi-key': apiKey,
+                'x-rapidapi-host': 'ai-workout-planner-exercise-fitness-nutrition-guide.p.rapidapi.com',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            throw new Error(`API request failed: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        
+        // Show results section
+        document.getElementById('results').classList.remove('hidden');
+        showResultSection('workoutPlanResults');
+
+        // Update result fields
+        document.getElementById('resultGoal').textContent = result.result.goal;
+        document.getElementById('resultFitnessLevel').textContent = result.result.fitness_level;
+        document.getElementById('resultDuration').textContent = `${result.result.total_weeks} weeks`;
+        document.getElementById('resultSessions').textContent = 
+            `${result.result.schedule.days_per_week} days/week, ${result.result.schedule.session_duration} min`;
+
+        // Generate workout days
+        const workoutDaysContainer = document.getElementById('workoutDays');
+        if (!workoutDaysContainer) {
+            throw new Error('Workout days container not found');
+        }
+
+        workoutDaysContainer.innerHTML = '';
+        
+        result.result.exercises.forEach(day => {
+            const dayCard = document.createElement('div');
+            dayCard.className = 'card bg-base-200 shadow-xl hover:shadow-2xl transition-all duration-300';
+            dayCard.innerHTML = `
+                <div class="card-body p-4">
+                    <h3 class="card-title text-primary">${day.day}</h3>
+                    <div class="divider my-2"></div>
+                    <ul class="space-y-3">
+                        ${day.exercises.map(exercise => `
+                            <li class="bg-base-100 p-4 rounded-lg hover:shadow-md transition-shadow">
+                                <div class="font-bold text-lg mb-2">${exercise.name}</div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="badge badge-lg badge-primary">${exercise.sets} sets</span>
+                                    <span class="badge badge-lg badge-secondary">${exercise.repetitions}</span>
+                                    <span class="badge badge-lg badge-accent">${exercise.duration}</span>
+                                </div>
+                                ${exercise.equipment ? `
+                                    <div class="text-sm mt-2 opacity-75">
+                                        <i class="fas fa-dumbbell mr-1"></i> Equipment: ${exercise.equipment}
+                                    </div>
+                                ` : ''}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
+            workoutDaysContainer.appendChild(dayCard);
+        });
+
+        // Update SEO Information
+        document.getElementById('seoTitle').textContent = result.result.seo_title;
+        document.getElementById('seoContent').textContent = result.result.seo_content;
+        document.getElementById('seoKeywords').textContent = result.result.seo_keywords;
+
+        showSuccess('Custom workout plan created successfully!');
+    } catch (error) {
+        showError(error.message);
+    } finally {
+        toggleLoading(false);
+    }
+}
+
+// Image preview için event listener ekleyelim
+document.getElementById('foodImage').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('imagePreview');
+            preview.querySelector('img').src = e.target.result;
+            preview.classList.remove('hidden');
+            document.getElementById('foodImageUrl').disabled = true;
+        }
+        reader.readAsDataURL(file);
+    }
+});
+
+// Remove image fonksiyonu
+function removeImage() {
+    document.getElementById('foodImage').value = '';
+    document.getElementById('imagePreview').classList.add('hidden');
+    document.getElementById('foodImageUrl').disabled = false;
+}
+
+// Helper function for updating macronutrient progress
+function updateMacroProgress(progressId, valueId, ratio, value) {
+    const progress = document.getElementById(progressId);
+    const valueElement = document.getElementById(valueId);
+    progress.style.setProperty('--value', ratio);
+    valueElement.textContent = value;
+}
+
+// Add this function to handle API key related UI
+function setupApiKeyHandling() {
+    const apiKeyInput = document.getElementById('apiKey');
+    const apiKeyStatus = document.getElementById('apiKeyStatus');
+    
+    // Check for saved API key
+    const savedApiKey = localStorage.getItem('rapidApiKey');
+    if (savedApiKey) {
+        apiKeyInput.value = savedApiKey;
+        updateApiKeyStatus(true);
+    }
+
+    // Handle API key input changes
+    apiKeyInput.addEventListener('input', function() {
+        const key = this.value.trim();
+        localStorage.setItem('rapidApiKey', key);
+        updateApiKeyStatus(key !== '');
+    });
+}
+
+// Function to update API key status indicator
+function updateApiKeyStatus(isValid) {
+    const statusIcon = document.getElementById('apiKeyStatus');
+    if (isValid) {
+        statusIcon.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        `;
+        statusIcon.title = 'API Key is set';
+    } else {
+        statusIcon.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+        `;
+        statusIcon.title = 'API Key is required';
+    }
+}
+
+// Add this to your existing code
+document.addEventListener('DOMContentLoaded', function() {
+    setupApiKeyHandling();
+});
+    </script>
+</body>
+</html>
